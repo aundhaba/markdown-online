@@ -1,0 +1,148 @@
+
+<!DOCTYPE html>
+<html lang="en" data-mode="light" data-theme="purple">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>BearClone AI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      /* Theme Accents */
+      --color-primary: #8B5CF6; /* Violet 500 */
+      --color-primary-hover: #7C3AED; /* Violet 600 */
+      --color-ring: rgba(139, 92, 246, 0.2);
+    }
+
+    [data-theme='red'] {
+      --color-primary: #D94236;
+      --color-primary-hover: #B93226;
+      --color-ring: rgba(217, 66, 54, 0.2);
+    }
+
+    /* Light Mode (Default) */
+    [data-mode='light'] {
+      --bg-main: #FFFFFF;
+      --bg-sidebar: #2E3235;
+      --bg-list: #F7F7F7;
+      --text-main: #222222;
+      --text-secondary: #888888;
+      --text-sidebar: #9CA3AF;
+      --text-sidebar-hover: #FFFFFF;
+      --bg-sidebar-hover: #3E4245;
+      --border-color: #E5E5E5;
+      --bg-select: #F3E8FF; /* Light Purple for selection */
+      --text-select-contrast: #5B21B6;
+    }
+
+    /* Dark Mode */
+    [data-mode='dark'] {
+      --bg-main: #1C1C1E;
+      --bg-sidebar: #151517; /* Even darker sidebar */
+      --bg-list: #2C2C2E;
+      --text-main: #E5E5E5;
+      --text-secondary: #9CA3AF;
+      --text-sidebar: #9CA3AF;
+      --text-sidebar-hover: #FFFFFF;
+      --bg-sidebar-hover: #3E4245;
+      --border-color: #38383A;
+      --bg-select: #4C1D95; /* Dark Purple for selection */
+      --text-select-contrast: #E9D5FF;
+    }
+
+    /* Override Selection colors based on theme + mode */
+    [data-mode='dark'][data-theme='red'] {
+      --bg-select: #7F1D1D;
+      --text-select-contrast: #FECACA;
+    }
+    [data-mode='light'][data-theme='red'] {
+      --bg-select: #FEE2E2;
+      --text-select-contrast: #991B1B;
+    }
+
+    body {
+      overscroll-behavior-y: none;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    .hide-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .hide-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    
+    ::selection {
+      background-color: var(--color-primary);
+      color: white;
+    }
+    
+    textarea::placeholder {
+      color: var(--text-secondary);
+      font-style: italic;
+      opacity: 0.6;
+    }
+  </style>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            serif: ['Merriweather', 'serif'],
+          },
+          colors: {
+            theme: {
+              primary: 'var(--color-primary)',
+              hover: 'var(--color-primary-hover)',
+              bg: 'var(--bg-select)',
+              text: 'var(--text-select-contrast)',
+              main: 'var(--bg-main)',
+              list: 'var(--bg-list)',
+              border: 'var(--border-color)',
+            },
+            text: {
+              main: 'var(--text-main)',
+              secondary: 'var(--text-secondary)',
+            },
+            sidebar: {
+              bg: 'var(--bg-sidebar)',
+              hover: 'var(--bg-sidebar-hover)',
+              text: 'var(--text-sidebar)',
+              textHover: 'var(--text-sidebar-hover)',
+            }
+          },
+          boxShadow: {
+            'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
+            'float': '0 10px 40px -10px rgba(0, 0, 0, 0.1)',
+          }
+        }
+      }
+    }
+  </script>
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.30.0",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.555.0"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body class="h-screen w-screen overflow-hidden font-sans antialiased">
+  <div id="root" class="h-full w-full"></div>
+<script type="module" src="/index.tsx"></script>
+</body>
+</html>
