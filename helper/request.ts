@@ -1,54 +1,69 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
+import axios from 'axios';
+import type { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 
-// 可根据实际情况设置 baseURL
-const instance = axios.create({
-  baseURL: '',
-  timeout: 5000,
-});
+// 定义返回数据的基本格式（根据你的后端接口调整）
+interface Result<T = any> {
+  code: number;
+  message: string;
+  data: T;
+}
 
-// 请求拦截器：自动携带 token
-instance.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers = config.headers ?? {} as import('axios').AxiosRequestHeaders;
-      config.headers['Authorization'] = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
+class Request {
+  // axios 实例
+  instance: AxiosInstance;
 
-// 响应拦截器：统一处理错误和数据格式
-instance.interceptors.response.use(
-  (response: AxiosResponse) => {
-    // 可根据后端约定统一处理
-    if (response.data && response.data.code && response.data.code !== 0) {
-      return Promise.reject(response.data);
-    }
-    return response.data;
-  },
-  (error) => {
-    // 可根据实际情况扩展
-    return Promise.reject(error);
+  constructor(config: AxiosRequestConfig) {
+    this.instance = axios.create(config);
+
+    // 1. 请求拦截器
+    this.instance.interceptors.request.use(
+      (config) => {
+        // 在这里添加 token 等全局配置
+        const token = localStorage.getItem('token');
+        if (token && config.headers) {
+          config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+      },
+      (error) => Promise.reject(error)
+    );
+
+    // 2. 响应拦截器
+    this.instance.interceptors.response.use(
+      (response: AxiosResponse) => {
+        const { data } = response;
+        // 根据后端约定的状态码进行逻辑处理
+        if (data.code !== 200) {
+          console.error(data.message || '请求失败');
+          return Promise.reject(new Error(data.message || 'Error'));
+        }
+        return data; // 直接返回数据部分
+      },
+      (error) => {
+        // 统一处理 HTTP 错误（401, 404, 500等）
+        return Promise.reject(error);
+      }
+    );
   }
-);
 
-// 通用请求方法，支持泛型
-const request = {
-  get<T = any>(url: string, config?: AxiosRequestConfig): Promise<T> {
-    return instance.get(url, config);
-  },
-  post<T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
-    return instance.post(url, data, config);
-  },
-  put<T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
-    return instance.put(url, data, config);
-  },
-  delete<T = any>(url: string, config?: AxiosRequestConfig): Promise<T> {
-    return instance.delete(url, config);
-  },
-  // 可扩展更多方法
-};
+  // 公共请求方法
+  request<T = any>(config: AxiosRequestConfig): Promise<Result<T>> {
+    return this.instance.request(config);
+  }
+
+  get<T = any>(url: string, config?: AxiosRequestConfig): Promise<Result<T>> {
+    return this.instance.get(url, config);
+  }
+
+  post<T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<Result<T>> {
+    return this.instance.post(url, data, config);
+  }
+}
+
+// 导出实例
+const request = new Request({
+  baseURL: 'https://api.example.com',
+  timeout: 5000
+});
 
 export default request;
