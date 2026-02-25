@@ -1,5 +1,6 @@
 
 import { Note, Folder } from '../types';
+import sync from './sync'
 
 const STORAGE_KEY_NOTES = 'bearclone_notes_v2';
 const STORAGE_KEY_FOLDERS = 'bearclone_folders_v1';
